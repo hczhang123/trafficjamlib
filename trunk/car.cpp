@@ -2,9 +2,10 @@
 #include "car.h"
 #include "coordinates.h"
 #include <vector>
+#include <iostream>
 
 Car::Car(int dir, coors c, int s) { // initialize with specific parameters
-  cdir = dir;
+  cdir = 0;
   xy = c;
   streetsize = s;
 }
@@ -18,7 +19,7 @@ void Car::setcoors(int x, int y) { // just in case we want to pass two ints
   xy.y = y;
 }
 
-coors Car::corrs(void) { // return a coors object with the Car's current coordinates
+coors Car::getcoors(void) { // return a coors object with the Car's current coordinates
   coors c;
   c.x = xy.x;
   c.y = xy.y;
@@ -41,10 +42,14 @@ void Car::directions(std::vector<int> dirs) { // add directions to the Car's cur
   for(int i=0; i<dirs.size(); i++) {
     turns.push_back(dirs[i]);
   }
+  if(cdir == 0) {
+    cdir = turns[turns.size()-1];
+    turns.pop_back();
+  }
 }
 
 void Car::update(void) { // move the Car based on it's velocity, coordinates, directions, street size, and speed limit
-  if(xy.x%streetsize >= vl && xy.y%streetsize >= vl) {
+  if((xy.x%streetsize != 0 || xy.y%streetsize != 0) && ((xy.x%streetsize <= vl && cdir  == 4) || (xy.x%streetsize >= vl && cdir == 2) || (xy.y%streetsize <= vl && cdir == 1) || (xy.y%streetsize >= vl && cdir == 3))) {
     move(vl);
   }
   
@@ -55,32 +60,48 @@ void Car::update(void) { // move the Car based on it's velocity, coordinates, di
   }
 
   else if(xy.x%streetsize > 0 && xy.y%streetsize > 0) {
-    if(cdir%2 == 0) {
+    if(cdir == 1) {
+      int i = vl - streetsize - xy.y%streetsize;
+      move(streetsize-xy.y%streetsize);
+      cdir = turns[turns.size()-1];
+      turns.pop_back();
+      move(i);
+    }
+    else if(cdir == 2) {
+      int i = vl - streetsize - xy.x%streetsize;
+      move(streetsize - xy.x%streetsize);
+      cdir = turns[turns.size()-1];
+      turns.pop_back();
+      move(i);
+    }
+    else if(cdir == 3) {
+      int i = vl - xy.y%streetsize;
       move(xy.y%streetsize);
       cdir = turns[turns.size()-1];
       turns.pop_back();
-      move(vl-xy.y%streetsize);
+      move(i);
     }
     else {
+      int i = vl - xy.x%streetsize;
       move(xy.x%streetsize);
       cdir = turns[turns.size()-1];
       turns.pop_back();
-      move(xy.x%streetsize);
+      move(i);
     }
   }
 }
 
 void Car::move(int m) { // move the Car m units based on the current orientation
   if(cdir == 1) {
-    xy.x -= m;
-  }
-  else if(cdir == 2) {
     xy.y += m;
   }
-  else if(cdir == 3) {
+  else if(cdir == 2) {
     xy.x += m;
   }
-  else if(cdir == 4) {
+  else if(cdir == 3) {
     xy.y -= m;
+  }
+  else if(cdir == 4) {
+    xy.x -= m;
   }
 }

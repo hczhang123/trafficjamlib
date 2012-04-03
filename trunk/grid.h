@@ -13,14 +13,16 @@ class Grid {
   int speedlimit;
   std::vector<Car> cars;
  public:
-  Grid(coors si, int st, int sp);
+  Grid(coors, int, int);
   Grid();
-  void addcar(int v);
+  void addcar(int, int);
   void move(void);
   int carssize(void);
-  coors corrs(int i);
+  coors corrs(int);
   coors size(void);
   int street(void);
+  Car* getcar(int);
+  void directions(int, std::vector<int>);
 };
 
 #endif
