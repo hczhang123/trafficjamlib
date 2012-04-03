@@ -17,7 +17,7 @@ public:
   void setcoors(int x, int y);
   void setvelocity(int v);
   void incvelocity(int vi);
-  coors corrs(void);
+  coors getcoors(void);
   int velocity(void);
   void directions(std::vector<int> dirs);
   void update(void);
