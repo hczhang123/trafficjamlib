@@ -1,0 +1,1 @@
+A C++ library for simulating the movement of cars along a grid of streets, and maybe some collision avoidance algorithms.
